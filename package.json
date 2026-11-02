@@ -1,0 +1,27 @@
+{
+  "name": "diff-risk-spike",
+  "version": "1.0.0",
+  "description": "Throwaway spike: git diff → dependency risk ranking → LLM summary",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OverExGG1/diff-risk-spike.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/OverExGG1/diff-risk-spike/issues"
+  },
+  "homepage": "https://github.com/OverExGG1/diff-risk-spike#readme",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
+    "@google/genai": "^2.32.0",
+    "madge": "^7.0.0",
+    "simple-git": "^4.0.2"
+  }
+}
