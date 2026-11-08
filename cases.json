@@ -1,0 +1,15 @@
+{
+  "repo": "C:\\dev\\axios",
+  "base": "v1.20.0",
+  "cases": [
+    {
+      "id": "case-01",
+      "head": "case-01",
+      "split": "dev",
+      "bugFile": "lib/helpers/cookies.js",
+      "bugType": "changed boundary",
+      "tier": "mid",
+      "expectedSymptom": "…"
+    }
+  ]
+}
