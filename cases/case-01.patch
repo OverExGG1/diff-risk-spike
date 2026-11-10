@@ -1,0 +1,12 @@
+diff --git a/lib/helpers/cookies.js b/lib/helpers/cookies.js
+index c197875f..5ae4e6e5 100644
+--- a/lib/helpers/cookies.js
++++ b/lib/helpers/cookies.js
+@@ -51,7 +51,6 @@ export default platform.hasStandardBrowserEnv
+       },
+ 
+       remove(name) {
+-        this.write(name, '', Date.now() - 86400000, '/');
+       },
+     }
+   : // Non-standard browser env (web workers, react-native) lack needed support.
