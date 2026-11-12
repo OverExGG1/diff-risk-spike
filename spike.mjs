@@ -13,8 +13,8 @@ import { GoogleGenAI } from '@google/genai';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const MAX_FILES_TO_LLM = 3;      // only the top-N ranked files go to the model
-const MAX_HUNK_CHARS = 6000;     // truncate each file's diff to cap tokens/cost
+const MAX_FILES_TO_LLM = Number(process.env.TOP_N ?? 3);        // only the top-N ranked files go to the model
+const MAX_HUNK_CHARS = Number(process.env.MAX_HUNK ?? 6000);    // truncate each file's diff to cap tokens/cost
 const MODEL = process.env.MODEL ?? 'gemini-3-flash-preview'; // check AI Studio for the current model name
 
 // ---------------------------------------------------------------------------
@@ -203,13 +203,13 @@ async function main() {
   console.log('\n--- LLM result ---');
   console.log(parsed ?? `(could not parse JSON)\n${llm.text}`);
   console.log(`\ntokens in/out: ${llm.inputTokens}/${llm.outputTokens}   time: ${llm.ms} ms`);
-  console.log('invented files:', findInventedFiles(parsed, topFiles.map((f) => f.file)));
+  console.log('invented files:', findInventedFiles(parsed, topFiles.flatMap((f) => [f.file, ...f.dependents])));
 
   // Log everything for your dev journal and, later, the dissertation's evaluation.
   fs.mkdirSync('runs', { recursive: true });
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-  fs.writeFileSync(`runs/${stamp}.json`, JSON.stringify(
-    { repoPath, base, head, ranked, userPrompt, llm, parsed }, null, 2));
+    fs.writeFileSync(`runs/${stamp}.json`, JSON.stringify(
+    { repoPath, base, head, settings: { MAX_FILES_TO_LLM, MAX_HUNK_CHARS, MODEL }, ranked, userPrompt, llm, parsed }, null, 2));
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

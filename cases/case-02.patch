@@ -1,0 +1,13 @@
+diff --git a/lib/helpers/resolveConfig.js b/lib/helpers/resolveConfig.js
+index 94d81def..7ea0cd63 100644
+--- a/lib/helpers/resolveConfig.js
++++ b/lib/helpers/resolveConfig.js
+@@ -19,7 +19,7 @@ import buildURL from './buildURL.js';
+  */
+ const encodeUTF8 = (str) =>
+   encodeURIComponent(str).replace(/%([0-9A-F]{2})/gi, (_, hex) =>
+-    String.fromCharCode(parseInt(hex, 16))
++    String.fromCharCode(parseInt(hex, 10))
+   );
+ 
+ const readCookie = (name) => cookies.read(name);
