@@ -1,0 +1,44 @@
+{
+  "repoPath": "C:\\dev\\axios",
+  "base": "v1.20.0",
+  "head": "case-01",
+  "ranked": [
+    {
+      "file": "lib/helpers/cookies.js",
+      "added": 0,
+      "removed": 1,
+      "hunk": "diff --git a/lib/helpers/cookies.js b/lib/helpers/cookies.js\nindex c197875f..5ae4e6e5 100644\n--- a/lib/helpers/cookies.js\n+++ b/lib/helpers/cookies.js\n@@ -51,7 +51,6 @@ export default platform.hasStandardBrowserEnv\n       },\n \n       remove(name) {\n-        this.write(name, '', Date.now() - 86400000, '/');\n       },\n     }\n   : // Non-standard browser env (web workers, react-native) lack needed support.\n",
+      "dependents": [
+        "lib/helpers/resolveConfig.js"
+      ],
+      "score": 2
+    }
+  ],
+  "userPrompt": "Repository: axios\nComparing v1.20.0 -> case-01\n\n### File 1: lib/helpers/cookies.js\nRisk score: 2 (+0 / -1 lines)\nImported by (1): lib/helpers/resolveConfig.js\nDiff:\ndiff --git a/lib/helpers/cookies.js b/lib/helpers/cookies.js\nindex c197875f..5ae4e6e5 100644\n--- a/lib/helpers/cookies.js\n+++ b/lib/helpers/cookies.js\n@@ -51,7 +51,6 @@ export default platform.hasStandardBrowserEnv\n       },\n \n       remove(name) {\n-        this.write(name, '', Date.now() - 86400000, '/');\n       },\n     }\n   : // Non-standard browser env (web workers, react-native) lack needed support.\n\n\nReturn ONLY the JSON object.",
+  "llm": {
+    "text": "{\n  \"summary\": \"The cookie removal logic in lib/helpers/cookies.js was emptied, making the remove method a no-op in standard browser environments.\",\n  \"risks\": [\n    {\n      \"file\": \"lib/helpers/cookies.js\",\n      \"concern\": \"Calling cookies.remove(name) will no longer delete cookies, which may cause stale session data or security risks if applications expect cookies to be cleared.\",\n      \"evidence\": \"removal of this.write(name, '', Date.now() - 86400000, '/') in the remove method\",\n      \"confidence\": \"high\"\n    }\n  ],\n  \"check_first\": [\n    \"lib/helpers/cookies.js\",\n    \"lib/helpers/resolveConfig.js\"\n  ],\n  \"unknowns\": [\n    \"The rationale for disabling cookie removal\",\n    \"Whether other parts of the codebase or downstream consumers depend on functional cookie deletion\"\n  ]\n}",
+    "model": "gemini-3-flash-preview",
+    "ms": 9730,
+    "inputTokens": 494,
+    "outputTokens": 219
+  },
+  "parsed": {
+    "summary": "The cookie removal logic in lib/helpers/cookies.js was emptied, making the remove method a no-op in standard browser environments.",
+    "risks": [
+      {
+        "file": "lib/helpers/cookies.js",
+        "concern": "Calling cookies.remove(name) will no longer delete cookies, which may cause stale session data or security risks if applications expect cookies to be cleared.",
+        "evidence": "removal of this.write(name, '', Date.now() - 86400000, '/') in the remove method",
+        "confidence": "high"
+      }
+    ],
+    "check_first": [
+      "lib/helpers/cookies.js",
+      "lib/helpers/resolveConfig.js"
+    ],
+    "unknowns": [
+      "The rationale for disabling cookie removal",
+      "Whether other parts of the codebase or downstream consumers depend on functional cookie deletion"
+    ]
+  }
+}
