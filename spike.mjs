@@ -9,13 +9,15 @@
 
 import { simpleGit } from 'simple-git';
 import madge from 'madge';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, Type } from '@google/genai';
 import fs from 'node:fs';
 import path from 'node:path';
 
+const MAX_OUTPUT_TOKENS = Number(process.env.MAX_OUT ?? 8192);
 const MAX_FILES_TO_LLM = Number(process.env.TOP_N ?? 3);        // only the top-N ranked files go to the model
 const MAX_HUNK_CHARS = Number(process.env.MAX_HUNK ?? 6000);    // truncate each file's diff to cap tokens/cost
 const MODEL = process.env.MODEL ?? 'gemini-3-flash-preview'; // check AI Studio for the current model name
+const TEMPERATURE = process.env.TEMP !== undefined ? Number(process.env.TEMP) : undefined; // Leave TEMP unset to use the provider's default. Check the docs for your model before forcing 0.
 
 // ---------------------------------------------------------------------------
 // STEP 1: read the diff
@@ -125,6 +127,30 @@ Schema:
   "unknowns": ["things you could not determine from the provided context"]
 }`;
 
+// Constrains the output shape so the model cannot drop a key (mirrors the schema above).
+const RESPONSE_SCHEMA = {
+  type: Type.OBJECT,
+  properties: {
+    summary: { type: Type.STRING },
+    risks: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          file: { type: Type.STRING },
+          concern: { type: Type.STRING },
+          evidence: { type: Type.STRING },
+          confidence: { type: Type.STRING, enum: ['high', 'medium', 'low'] },
+        },
+        required: ['file', 'concern', 'evidence', 'confidence'],
+      },
+    },
+    check_first: { type: Type.ARRAY, items: { type: Type.STRING } },
+    unknowns: { type: Type.ARRAY, items: { type: Type.STRING } },
+  },
+  required: ['summary', 'risks', 'check_first', 'unknowns'],
+};
+
 function buildUserPrompt({ repoName, base, head, topFiles }) {
   const blocks = topFiles.map((f, i) => {
     const truncated = f.hunk.length > MAX_HUNK_CHARS;
@@ -140,27 +166,46 @@ function buildUserPrompt({ repoName, base, head, topFiles }) {
 }
 
 // ---------------------------------------------------------------------------
-// STEP 5: one LLM call, logging tokens and time
+// STEP 5: one LLM call, logging tokens, finish reason and time
+// Retries on 429/503 with exponential backoff; any other error is thrown.
 // ---------------------------------------------------------------------------
 async function callLLM(userPrompt) {
   const ai = new GoogleGenAI({}); // reads GEMINI_API_KEY from the environment
-  const t0 = Date.now();
-  const res = await ai.models.generateContent({
-    model: MODEL,
-    contents: userPrompt,
-    config: {
-      systemInstruction: SYSTEM_PROMPT,
-      maxOutputTokens: 4000, // thinking models can spend part of this budget before the JSON
-      responseMimeType: 'application/json',
-    },
-  });
-  return {
-    text: res.text ?? '',
-    model: MODEL,
-    ms: Date.now() - t0,
-    inputTokens: res.usageMetadata?.promptTokenCount,
-    outputTokens: res.usageMetadata?.candidatesTokenCount,
-  };
+  const maxAttempts = 4;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const t0 = Date.now();
+    try {
+      const res = await ai.models.generateContent({
+        model: MODEL,
+        contents: userPrompt,
+        config: {
+          systemInstruction: SYSTEM_PROMPT,
+          maxOutputTokens: MAX_OUTPUT_TOKENS, // thinking tokens may count against this budget
+          responseMimeType: 'application/json',
+          responseSchema: RESPONSE_SCHEMA,
+          ...(TEMPERATURE !== undefined ? { temperature: TEMPERATURE } : {}),
+        },
+      });
+      const cand = res.candidates?.[0];
+      return {
+        text: res.text ?? '',
+        model: MODEL,
+        ms: Date.now() - t0,              // time of the successful attempt only
+        attempts: attempt,
+        finishReason: cand?.finishReason, // anything other than STOP means the run is suspect
+        inputTokens: res.usageMetadata?.promptTokenCount,
+        outputTokens: res.usageMetadata?.candidatesTokenCount,
+        thoughtsTokens: res.usageMetadata?.thoughtsTokenCount,
+      };
+    } catch (e) {
+      const retryable = e?.status === 429 || e?.status === 503;
+      if (!retryable || attempt === maxAttempts) throw e;
+      const wait = 2000 * 2 ** (attempt - 1); // 2 s, 4 s, 8 s
+      console.error(`LLM returned ${e.status}; retry ${attempt}/${maxAttempts - 1} in ${wait} ms`);
+      await new Promise((r) => setTimeout(r, wait));
+    }
+  }
 }
 
 // Tolerant parse: strip fences, grab the first {...}. Returns null if it still fails.
@@ -202,14 +247,19 @@ async function main() {
 
   console.log('\n--- LLM result ---');
   console.log(parsed ?? `(could not parse JSON)\n${llm.text}`);
-  console.log(`\ntokens in/out: ${llm.inputTokens}/${llm.outputTokens}   time: ${llm.ms} ms`);
+  console.log(`\ntokens in/out/thoughts: ${llm.inputTokens}/${llm.outputTokens}/${llm.thoughtsTokens}   finish: ${llm.finishReason}   attempts: ${llm.attempts}   time: ${llm.ms} ms`);
+  if (llm.finishReason !== 'STOP') console.warn('WARNING: run did not finish normally; do not count it as a miss.');
   console.log('invented files:', findInventedFiles(parsed, topFiles.flatMap((f) => [f.file, ...f.dependents])));
 
   // Log everything for your dev journal and, later, the dissertation's evaluation.
   fs.mkdirSync('runs', { recursive: true });
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-    fs.writeFileSync(`runs/${stamp}.json`, JSON.stringify(
-    { repoPath, base, head, settings: { MAX_FILES_TO_LLM, MAX_HUNK_CHARS, MODEL }, ranked, userPrompt, llm, parsed }, null, 2));
+  fs.writeFileSync(`runs/${stamp}.json`, JSON.stringify(
+    {
+      repoPath, base, head,
+      settings: { MAX_FILES_TO_LLM, MAX_HUNK_CHARS, MODEL, MAX_OUTPUT_TOKENS, TEMPERATURE: TEMPERATURE ?? 'provider default' },
+      ranked, userPrompt, llm, parsed,
+    }, null, 2));
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });
