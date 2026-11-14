@@ -1,6 +1,25 @@
-case,run,top_n,model,bug_file_rank,bug_in_prompt,detected,localized,concern_correct,other_concerns,invented_flag,tokens_in,tokens_out,time_ms,log_file,notes
-control-1.21,1,3,gemini-3-flash-preview,,n/a,n/a,n/a,n/a,3,none,4863,382,6528,2026-11-02T22-31-09-126Z.json,clean control (no planted bug)
-case-01,1,3,gemini-3-flash-preview,1,yes,yes,yes,yes,0,none,494,189,6304,2026-11-10T19-48-42-593Z.json,single-file diff; CI catches it
-case-01,2,3,gemini-3-flash-preview,1,yes,yes,yes,yes,0,resolveConfig.js (false alarm: checker predates fix),494,219,9730,2026-11-10T19-51-47-952Z.json,adds speculation about security risks
-case-02,1,3,gemini-3-flash-preview,15,no,no,n/a,n/a,3,none,4860,435,8092,2026-11-10T22-38-33-159Z.json,bug file not in top 3; run predates settings logging
-case-02,2,15,gemini-3-flash-preview,15,yes,yes,partial,2,none,18293,438,10809,FILL_IN,NaN claim imprecise; http.js and Axios.js concerns unverified
+case,run,harness,top_n,model,bug_file_rank,bug_in_prompt,detected,localized,concern_correct,other_concerns,invented_flag,finish_reason,parse_ok,tokens_in,tokens_out,thoughts_tokens,time_ms,log_file,notes
+control-1.21,1,unrecorded,3,gemini-3-flash-preview,,n/a,n/a,n/a,n/a,3,none,,true,4863,382,,6528,2026-11-02T22-31-09-126Z.json,clean control (no planted bug)
+case-01,1,unrecorded,3,gemini-3-flash-preview,1,yes,yes,yes,yes,0,none,,true,494,189,,6304,2026-11-10T19-48-42-593Z.json,single-file diff; CI catches it
+case-01,2,unrecorded,3,gemini-3-flash-preview,1,yes,yes,yes,yes,0,resolveConfig.js (false alarm: checker predates fix),,true,494,219,,9730,2026-11-10T19-51-47-952Z.json,adds speculation about security risks
+case-02,1,unrecorded,3,gemini-3-flash-preview,15,no,no,n/a,n/a,3,none,,true,4860,435,,8092,2026-11-10T22-38-33-159Z.json,bug file not in top 3; run predates settings logging
+case-02,2,unrecorded,15,gemini-3-flash-preview,15,yes,yes,yes,partial,2,none,,true,18293,438,,10809,2026-11-12T01-08-37-307Z.json,NaN claim imprecise; http.js and Axios.js concerns unverified
+case-02,1,2fa3b1d,3,gemini-3-flash-preview,15,no,no,,,3,none,,true,4860,479,,8686,2026-11-12T21-51-36-830Z.json,"bug file not sent (rank 15, top_n 3)"
+case-02,2,2fa3b1d,3,gemini-3-flash-preview,15,no,no,,,3,none,,true,4860,417,,7281,2026-11-12T21-53-04-417Z.json,"bug file not sent (rank 15, top_n 3)"
+case-02,3,2fa3b1d,3,gemini-3-flash-preview,15,no,no,,,3,none,,true,4860,404,,8498,2026-11-12T21-53-14-809Z.json,"bug file not sent (rank 15, top_n 3)"
+case-02,4,2fa3b1d,3,gemini-3-flash-preview,15,no,no,,,3,none,,true,4860,408,,9823,2026-11-12T21-53-26-520Z.json,"bug file not sent (rank 15, top_n 3)"
+case-02,1,2fa3b1d,5,gemini-3-flash-preview,15,no,no,,,4,none,,true,8248,562,,7536,2026-11-12T21-53-36-003Z.json,"bug file not sent (rank 15, top_n 5)"
+case-02,2,2fa3b1d,5,gemini-3-flash-preview,15,no,no,,,3,none,,true,8248,434,,14968,2026-11-12T21-53-52-868Z.json,"bug file not sent (rank 15, top_n 5)"
+case-02,3,2fa3b1d,5,gemini-3-flash-preview,15,no,no,,,3,none,,true,8248,449,,8250,2026-11-12T21-54-03-021Z.json,"bug file not sent (rank 15, top_n 5)"
+case-02,1,2fa3b1d,8,gemini-3-flash-preview,15,no,no,,,4,none,,true,12205,554,,9484,2026-11-12T21-54-14-382Z.json,"bug file not sent (rank 15, top_n 8)"
+case-02,2,2fa3b1d,8,gemini-3-flash-preview,15,no,no,,,4,none,,true,12205,544,,8968,2026-11-12T21-54-25-256Z.json,"bug file not sent (rank 15, top_n 8)"
+case-02,3,2fa3b1d,8,gemini-3-flash-preview,15,no,no,,,3,none,,true,12205,405,,7893,2026-11-12T21-54-35-015Z.json,"bug file not sent (rank 15, top_n 8)"
+case-02,1,2fa3b1d,10,gemini-3-flash-preview,15,no,no,,,4,none,,true,15015,526,,9638,2026-11-12T21-54-46-597Z.json,"bug file not sent (rank 15, top_n 10)"
+case-02,2,2fa3b1d,10,gemini-3-flash-preview,15,no,failure,n/a,n/a,,,,false,15015,545,,8668,2026-11-12T21-54-57-126Z.json,FAILURE (not a miss): output could not be parsed as JSON
+case-02,3,2fa3b1d,10,gemini-3-flash-preview,15,no,no,,,4,none,,true,15015,536,,10144,2026-11-12T21-55-09-190Z.json,"bug file not sent (rank 15, top_n 10)"
+case-02,1,2fa3b1d,15,gemini-3-flash-preview,15,yes,failure,n/a,n/a,,,,false,18293,148,,19550,2026-11-12T21-55-30-615Z.json,FAILURE (not a miss): output could not be parsed as JSON
+case-02,2,2fa3b1d,15,gemini-3-flash-preview,15,yes,yes,,,3,none,,true,18293,517,,12908,2026-11-12T21-55-45-439Z.json,
+case-02,3,2fa3b1d,15,gemini-3-flash-preview,15,yes,yes,,,4,none,,true,18293,612,,18809,2026-11-12T21-56-06-158Z.json,
+case-02,1,2fa3b1d,27,gemini-3-flash-preview,15,yes,failure,n/a,n/a,,,,false,22470,458,,19578,2026-11-12T21-56-27-632Z.json,FAILURE (not a miss): output could not be parsed as JSON
+case-02,4,2fa3b1d,15,gemini-3-flash-preview,15,yes,yes,,,3,none,,true,18293,532,,10216,2026-11-13T00-51-31-793Z.json,
+case-02,1,83d5b56,15,gemini-3-flash-preview,15,yes,yes,,,3,none,STOP,true,18293,564,1542,10559,2026-11-14T00-04-54-185Z.json,

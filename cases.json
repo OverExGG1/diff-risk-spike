@@ -7,9 +7,26 @@
       "head": "case-01",
       "split": "dev",
       "bugFile": "lib/helpers/cookies.js",
-      "bugType": "changed boundary",
-      "tier": "mid",
-      "expectedSymptom": "…"
+      "bugType": "removed statement",
+      "tier": "easy",
+      "patchBase": "v1.20.0",
+      "patch": "cases/case-01.patch",
+      "expectedSymptom": "TODO: your own words (note if written after the first runs)",
+      "existingTestsCatch": true,
+      "catchingTest": "tests/browser/cookies.browser.test.js > removes cookies",
+      "testEvidence": "v1.20.0: 24/24 pass; case-01: 21 pass, 3 fail (chromium, firefox, webkit)"
+    },
+    {
+      "id": "case-02",
+      "head": "case-02",
+      "split": "dev",
+      "bugFile": "lib/helpers/resolveConfig.js",
+      "bugType": "changed constant",
+      "tier": "TODO",
+      "patchBase": "v1.21.0",
+      "patch": "cases/case-02.patch",
+      "expectedSymptom": "TODO: your own words (note if written after the first runs)",
+      "existingTestsCatch": null
     }
   ]
 }
