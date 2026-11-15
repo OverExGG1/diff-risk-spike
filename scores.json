@@ -1,0 +1,11 @@
+{
+  "2026-11-15T02-23-39-669Z.json": { "localized": "yes", "concern_correct": "partial", "notes": "NaN only when first hex digit is A-F; otherwise wrong value (41 parses as 41 not 65)" },
+  "2026-11-15T02-23-58-582Z.json": { "localized": "yes", "concern_correct": "yes" },
+  "2026-11-15T02-24-16-785Z.json": { "localized": "yes", "concern_correct": "yes" },
+  "2026-11-15T02-24-42-238Z.json": { "localized": "yes", "concern_correct": "partial", "notes": "NaN only when first hex digit is A-F; otherwise wrong value (41 parses as 41 not 65)" },
+  "2026-11-15T02-26-08-256Z.json": { "localized": "yes", "concern_correct": "partial", "notes": "borderline partial; says failures for A-F but digit-first pairs also give wrong values" },
+  "2026-11-15T02-26-29-680Z.json": { "localized": "yes", "concern_correct": "yes" },
+  "2026-11-15T02-27-37-875Z.json": { "localized": "yes", "concern_correct": "yes" },
+  "2026-11-15T02-28-32-973Z.json": { "localized": "yes", "concern_correct": "yes" },
+  "2026-11-15T02-28-49-767Z.json": { "localized": "yes", "concern_correct": "yes" }
+}
