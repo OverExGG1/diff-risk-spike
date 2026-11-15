@@ -23,3 +23,8 @@ case-02,3,2fa3b1d,15,gemini-3-flash-preview,15,yes,yes,yes,yes,4,none,,true,1829
 case-02,1,2fa3b1d,27,gemini-3-flash-preview,15,yes,failure,n/a,n/a,,,,false,22470,458,,19578,2026-11-12T21-56-27-632Z.json,failure type: truncated mid-string; probable output-budget exhaustion (cause not logged); bug flagged in visible partial output
 case-02,4,2fa3b1d,15,gemini-3-flash-preview,15,yes,yes,yes,yes,3,none,,true,18293,532,,10216,2026-11-13T00-51-31-793Z.json,ad hoc rerun after key reset; old harness; unplanned 4th run at N=15
 case-02,1,83d5b56,15,gemini-3-flash-preview,15,yes,yes,yes,yes,3,none,STOP,true,18293,564,1542,10559,2026-11-14T00-04-54-185Z.json,
+case-02,1,83d5b56,27,gemini-3-flash-preview,15,yes,no,,,4,none,STOP,true,22470,578,1432,11471,2026-11-15T01-41-28-061Z.json,
+case-02,2,83d5b56,15,gemini-3-flash-preview,15,yes,yes,,,3,none,STOP,true,18293,546,1353,15051,2026-11-15T01-41-44-954Z.json,
+case-02,2,83d5b56,27,gemini-3-flash-preview,15,yes,no,,,4,none,STOP,true,22470,535,1658,12383,2026-11-15T01-41-59-708Z.json,
+case-02,3,83d5b56,15,gemini-3-flash-preview,15,yes,no,,,4,none,STOP,true,18293,560,1048,8084,2026-11-15T01-42-10-072Z.json,
+case-02,3,83d5b56,27,gemini-3-flash-preview,15,yes,no,,,4,none,STOP,true,22470,534,1016,8559,2026-11-15T01-42-20-701Z.json,
