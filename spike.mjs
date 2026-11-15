@@ -101,6 +101,32 @@ function scoreFiles(changed, dependentsMap) {
 }
 
 // ---------------------------------------------------------------------------
+// OPTIONAL DIAGNOSTIC: prompt-order ablation. Moves ONE known file to the start, the middle or
+// the end of the prompt, keeping the other files in ranked order. It needs the answer (BUG_FILE),
+// so it is an oracle experiment for diagnosis only, never a real tool setting.
+// Default ORDER=rank leaves the ranked order untouched, so normal runs are unchanged.
+// ---------------------------------------------------------------------------
+const PROMPT_ORDER = process.env.ORDER ?? 'rank';   // rank | first | middle | last
+const ORACLE_FILE = process.env.BUG_FILE;           // file to move; required unless ORDER=rank
+const HARNESS = process.env.HARNESS;                // optional label stored in the log (e.g. 83d5b56+order-first)
+
+function applyPromptOrder(files, order, oracleFile) {
+  if (order === 'rank') return files;
+  if (!['first', 'middle', 'last'].includes(order)) {
+    throw new Error(`ORDER must be rank, first, middle or last (got "${order}")`);
+  }
+  if (!oracleFile) throw new Error('ORDER needs BUG_FILE (the file to move)');
+  const idx = files.findIndex((f) => f.file === oracleFile);
+  if (idx === -1) {
+    throw new Error(`BUG_FILE ${oracleFile} is not among the ${files.length} files sent; raise TOP_N`);
+  }
+  const moved = files[idx];
+  const rest = files.filter((_, i) => i !== idx);
+  const pos = order === 'first' ? 0 : order === 'last' ? rest.length : Math.floor(rest.length / 2);
+  return [...rest.slice(0, pos), moved, ...rest.slice(pos)];
+}
+
+// ---------------------------------------------------------------------------
 // STEP 4: the LLM prompt (written for you: tweak it, but note every change)
 // The "evidence" field forces the model to point at the diff, which makes grading easier.
 // ---------------------------------------------------------------------------
@@ -240,7 +266,9 @@ async function main() {
   console.table(ranked.map(({ file, added, removed, score, dependents }) =>
     ({ file, added, removed, dependents: dependents.length, score })));
 
-  const topFiles = ranked.slice(0, MAX_FILES_TO_LLM);
+  const topFiles = applyPromptOrder(ranked.slice(0, MAX_FILES_TO_LLM), PROMPT_ORDER, ORACLE_FILE);
+  const promptPosition = ORACLE_FILE ? topFiles.findIndex((f) => f.file === ORACLE_FILE) + 1 : null;
+  if (PROMPT_ORDER !== 'rank') console.log(`PROMPT ORDER: ${PROMPT_ORDER}; ${ORACLE_FILE} is file ${promptPosition} of ${topFiles.length}`);
   const userPrompt = buildUserPrompt({ repoName: path.basename(repoPath), base, head, topFiles });
   const llm = await callLLM(userPrompt);
   const parsed = parseJson(llm.text);
@@ -257,7 +285,9 @@ async function main() {
   fs.writeFileSync(`runs/${stamp}.json`, JSON.stringify(
     {
       repoPath, base, head,
-      settings: { MAX_FILES_TO_LLM, MAX_HUNK_CHARS, MODEL, MAX_OUTPUT_TOKENS, TEMPERATURE: TEMPERATURE ?? 'provider default' },
+      harness: HARNESS, // omitted from the log when HARNESS is not set
+      settings: { MAX_FILES_TO_LLM, MAX_HUNK_CHARS, MODEL, MAX_OUTPUT_TOKENS, TEMPERATURE: TEMPERATURE ?? 'provider default', PROMPT_ORDER, ORACLE_FILE: ORACLE_FILE ?? null },
+      promptPosition,
       ranked, userPrompt, llm, parsed,
     }, null, 2));
 }
