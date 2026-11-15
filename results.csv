@@ -15,11 +15,11 @@ case-02,1,2fa3b1d,8,gemini-3-flash-preview,15,no,no,,,4,none,,true,12205,554,,94
 case-02,2,2fa3b1d,8,gemini-3-flash-preview,15,no,no,,,4,none,,true,12205,544,,8968,2026-11-12T21-54-25-256Z.json,"bug file not sent (rank 15, top_n 8)"
 case-02,3,2fa3b1d,8,gemini-3-flash-preview,15,no,no,,,3,none,,true,12205,405,,7893,2026-11-12T21-54-35-015Z.json,"bug file not sent (rank 15, top_n 8)"
 case-02,1,2fa3b1d,10,gemini-3-flash-preview,15,no,no,,,4,none,,true,15015,526,,9638,2026-11-12T21-54-46-597Z.json,"bug file not sent (rank 15, top_n 10)"
-case-02,2,2fa3b1d,10,gemini-3-flash-preview,15,no,failure,n/a,n/a,,,,false,15015,545,,8668,2026-11-12T21-54-57-126Z.json,FAILURE (not a miss): output could not be parsed as JSON
+case-02,2,2fa3b1d,10,gemini-3-flash-preview,15,no,failure,n/a,n/a,,,,false,15015,545,,8668,2026-11-12T21-54-57-126Z.json,failure type: malformed (complete object; invalid JSON; missing key); bug file not in prompt
 case-02,3,2fa3b1d,10,gemini-3-flash-preview,15,no,no,,,4,none,,true,15015,536,,10144,2026-11-12T21-55-09-190Z.json,"bug file not sent (rank 15, top_n 10)"
-case-02,1,2fa3b1d,15,gemini-3-flash-preview,15,yes,failure,n/a,n/a,,,,false,18293,148,,19550,2026-11-12T21-55-30-615Z.json,FAILURE (not a miss): output could not be parsed as JSON
-case-02,2,2fa3b1d,15,gemini-3-flash-preview,15,yes,yes,,,3,none,,true,18293,517,,12908,2026-11-12T21-55-45-439Z.json,
-case-02,3,2fa3b1d,15,gemini-3-flash-preview,15,yes,yes,,,4,none,,true,18293,612,,18809,2026-11-12T21-56-06-158Z.json,
-case-02,1,2fa3b1d,27,gemini-3-flash-preview,15,yes,failure,n/a,n/a,,,,false,22470,458,,19578,2026-11-12T21-56-27-632Z.json,FAILURE (not a miss): output could not be parsed as JSON
-case-02,4,2fa3b1d,15,gemini-3-flash-preview,15,yes,yes,,,3,none,,true,18293,532,,10216,2026-11-13T00-51-31-793Z.json,
-case-02,1,83d5b56,15,gemini-3-flash-preview,15,yes,yes,,,3,none,STOP,true,18293,564,1542,10559,2026-11-14T00-04-54-185Z.json,
+case-02,1,2fa3b1d,15,gemini-3-flash-preview,15,yes,failure,n/a,n/a,,,,false,18293,148,,19550,2026-11-12T21-55-30-615Z.json,failure type: truncated mid-string; probable output-budget exhaustion (cause not logged); bug flagged in visible partial output
+case-02,2,2fa3b1d,15,gemini-3-flash-preview,15,yes,yes,yes,yes,3,none,,true,18293,517,,12908,2026-11-12T21-55-45-439Z.json,
+case-02,3,2fa3b1d,15,gemini-3-flash-preview,15,yes,yes,yes,yes,4,none,,true,18293,612,,18809,2026-11-12T21-56-06-158Z.json,
+case-02,1,2fa3b1d,27,gemini-3-flash-preview,15,yes,failure,n/a,n/a,,,,false,22470,458,,19578,2026-11-12T21-56-27-632Z.json,failure type: truncated mid-string; probable output-budget exhaustion (cause not logged); bug flagged in visible partial output
+case-02,4,2fa3b1d,15,gemini-3-flash-preview,15,yes,yes,yes,yes,3,none,,true,18293,532,,10216,2026-11-13T00-51-31-793Z.json,ad hoc rerun after key reset; old harness; unplanned 4th run at N=15
+case-02,1,83d5b56,15,gemini-3-flash-preview,15,yes,yes,yes,yes,3,none,STOP,true,18293,564,1542,10559,2026-11-14T00-04-54-185Z.json,
